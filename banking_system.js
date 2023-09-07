@@ -27,25 +27,25 @@ class Customer extends BankAccount {
   }
 
   deposit() {
-    let amount = prompt("Deposit amount", "");
+    const amount = prompt("Deposit amount", "");
     super._deposit(Number(amount));
   }
 
   withdraw() {
-    let amount = prompt("Withdraw amount", "");
+    const amount = prompt("Withdraw amount", "");
     super._withdraw(amount);
   }
 }
 
 const main = () => {
   const name = prompt("Input your name", "");
-  let balance = prompt("Input your balance", "");
-  let again = "n";
+  const balance = prompt("Input your balance", "");
+  let again = "";
   const user = new Customer(name, Number(balance));
   user.balance();
 
   do {
-    let method = prompt(
+    const method = prompt(
       `
         Choose a method: 
         1. Deposit

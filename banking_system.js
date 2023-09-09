@@ -9,19 +9,30 @@ class BankAccount {
   }
 
   _deposit(amount) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.amount += amount;
       setTimeout(() => {
-        resolve(alert(`Deposited ${amount} to ${this.owner}'s account`));
+        if (amount <= 0 || isNaN(amount)) {
+          return reject("Invalid input! Please enter a correct input");
+        }
+
+        return resolve(alert(`Deposited ${amount} to ${this.owner}'s account`));
       }, 2000);
     });
   }
 
   _withdraw(amount) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.amount -= amount;
       setTimeout(() => {
-        resolve(alert(`Withdrawed ${amount} from ${this.owner}'s account`));
+        if (amount <= 0 || amount > this.amount || isNaN(amount)) {
+          return reject("Invalid input! Please enter a correct input");
+        } else if (this.amount <= 0) {
+          return reject("Balance is 0");
+        }
+        return resolve(
+          alert(`Withdrawed ${amount} from ${this.owner}'s account`)
+        );
       }, 2000);
     });
   }
@@ -34,20 +45,34 @@ class Customer extends BankAccount {
 
   async deposit() {
     const amount = prompt("Deposit amount", "");
-    await super._deposit(Number(amount));
-    this.balance();
+    try {
+      await super._deposit(Number(amount));
+      this.balance();
+    } catch (error) {
+      alert(error);
+      return Promise.reject(error);
+    }
   }
 
   async withdraw() {
     const amount = prompt("Withdraw amount", "");
-    await super._withdraw(amount);
-    this.balance();
+    try {
+      await super._withdraw(amount);
+      this.balance();
+    } catch (error) {
+      alert(error);
+      return Promise.reject(error);
+    }
   }
 }
 
 const main = async () => {
   const name = prompt("Input your name", "");
   const balance = prompt("Input your balance", "");
+  if (balance <= 0 || isNaN(Number(balance))) {
+    alert("Invalid input! Please enter a correct input");
+    return main();
+  }
   let again = "";
   const user = new Customer(name, Number(balance));
   user.balance();
@@ -68,7 +93,7 @@ const main = async () => {
       await user.withdraw();
     } else {
       alert("Invalid input");
-      return main();
+      return;
     }
 
     again = prompt("Do you want to repeat the transaction? (y/n)", "");

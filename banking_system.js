@@ -9,15 +9,21 @@ class BankAccount {
   }
 
   _deposit(amount) {
-    this.amount += amount;
-    alert(`Deposited ${amount} to ${this.owner}'s account`);
-    this.balance();
+    return new Promise((resolve) => {
+      this.amount += amount;
+      setTimeout(() => {
+        resolve(alert(`Deposited ${amount} to ${this.owner}'s account`));
+      }, 2000);
+    });
   }
 
   _withdraw(amount) {
-    this.amount -= amount;
-    alert(`Withdrawed ${amount} from ${this.owner}'s account`);
-    this.balance();
+    return new Promise((resolve) => {
+      this.amount -= amount;
+      setTimeout(() => {
+        resolve(alert(`Withdrawed ${amount} from ${this.owner}'s account`));
+      }, 2000);
+    });
   }
 }
 
@@ -26,18 +32,20 @@ class Customer extends BankAccount {
     super(owner, amount);
   }
 
-  deposit() {
+  async deposit() {
     const amount = prompt("Deposit amount", "");
-    super._deposit(Number(amount));
+    await super._deposit(Number(amount));
+    this.balance();
   }
 
-  withdraw() {
+  async withdraw() {
     const amount = prompt("Withdraw amount", "");
-    super._withdraw(amount);
+    await super._withdraw(amount);
+    this.balance();
   }
 }
 
-const main = () => {
+const main = async () => {
   const name = prompt("Input your name", "");
   const balance = prompt("Input your balance", "");
   let again = "";
@@ -55,9 +63,12 @@ const main = () => {
     );
 
     if (method === "1") {
-      user.deposit();
+      await user.deposit();
     } else if (method === "2") {
-      user.withdraw();
+      await user.withdraw();
+    } else {
+      alert("Invalid input");
+      return main();
     }
 
     again = prompt("Do you want to repeat the transaction? (y/n)", "");
